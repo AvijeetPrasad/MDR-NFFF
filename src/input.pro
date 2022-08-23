@@ -6,13 +6,13 @@
   ;path to codes
 codesdir = '/mn/stornext/d18/RoCS/avijeetp/codes/extrapolation/MDR-NFFF/src/'
   ; hard-disk path
-hd = '/mn/stornext/d18/RoCS/avijeetp/1_Projects/33_SST/2020-08-07/'
+hd = '/mn/stornext/d18/RoCS/avijeetp/1_Projects/33_SST/2022-07-01/'
 
 ; --- Event details ---
-event   = 'AR12770'
+event   = 'AR13048'
 source   = 'sst'
 ds      = 'crisp' ;input dataset
-tstart  = '08:22 07-aug-2020'
+tstart  = '11:48 01-jul-2022'
 ; source  = 'hmi'
 ; ds      = 'hmi.sharp_cea_720s' ;input dataset
 ; tstart  = '06:36 07-aug-2020'
@@ -26,19 +26,19 @@ mode     = 'calculate'; 'calculate', 'analysis'
 if (mode eq 'analysis') then id = '1661006033'
 
 if (download eq 'no') then begin 
-  savfile = 'SST_2020-08-07_08-22_512_512_040_Bxyz.sav'
+  savfile = 'Bxyz.sav'
 endif 
 
 ; --- Cropping details ---
 if (crop eq 'no') then begin
 ; crop details known from previous runs
   ; --- SST ---
-  xsize  = 512
-  ysize  = 512
+  xsize  = 928
+  ysize  = 928
   xorg   = 0
   yorg   = 0
   scl    = 4.
-  nz     = 512
+  nz     = 232
   harp   = 7436
 
   ;--- HMI ---
