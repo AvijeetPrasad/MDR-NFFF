@@ -1,12 +1,15 @@
 pro bnfff
 
-;created: Oct 08, 2021 by Avijeet Prasad
+;+created: Oct 08, 2021 by Avijeet Prasad
 ; TODO 2022/08/15 streamline all the steps and remove redundant code
 ; 
 ;Compile the routines called in this program
+;-
 @compile_routine
 ;include the input parameter file
-check_input, input_vars = input_vars
+codesdir = '/mn/stornext/d18/RoCS/avijeetp/codes/extrapolation/MDR-NFFF/src/'
+input = codesdir + 'input.pro'
+check_input, input, input_vars = input_vars
 restore, input_vars,/v 
 
 if (mode eq 'calculate') then begin 

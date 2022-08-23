@@ -1,19 +1,40 @@
-pro check_input, input_vars=input_vars
+pro check_input, input, input_vars=input_vars
 
+;+ 
+; name: check_input
+;
+; purpose: read the input file for a run, perform some checks and generate
+;           an sav file containing all the final input parameters
+;
+; calling sequence: check_input, input, input_vars=input_vars
+;
+; inputs: 
+;        input: full path of the input parameter file
+;
+; outputs:
+;         input_vars: an idl sav file containing all the input parameters 
+;         required for the run.
+;
 ; author : Avijeet Prasad
-; created on : 2022-08-01
-; purpose : check the input file for consistency
-; input : 
-; output :
-  ; input_vars: name of the save file containing all the input variables
+; created on : 2022-08-23
+;
 ; updates :
-  ;DONE 2022/08/15: create a check_file option with similar settings
+;-
+
+;TODO check if the input file exists 
+if (not (isa(input))) then begin 
+  print, 'Input file not specified'
+  codesdir='/mn/stornext/d18/RoCS/avijeetp/codes/extrapolation/MDR-NFFF/src/'
+  input = codesdir + 'input.pro'
+endif 
 
 ;* read the input file 
-cd, current = cwd
-cd, cwd + '/src/'
+file_exists = file_test(input)
+if not(file_exists) then begin 
+  print, 'Input file not found!! '
+  stop 
+endif else print, '=== Reading input file ==='
 @input
-
 ; --- Setup paths for saving output ---
 mktime, tstart,time,jsoc_time ; formatted time string
 ;generate a unique run id from timestamp if not defined in the input file
