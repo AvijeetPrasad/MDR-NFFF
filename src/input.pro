@@ -1,7 +1,6 @@
 ; ==== Template for extrapolation inputs ===
 ; Last update: 2022/08/17
 ; ======
-
 ; --- Input paths ---
   ;path to codes
 codesdir = '/mn/stornext/d18/RoCS/avijeetp/codes/extrapolation/MDR-NFFF/src/'
