@@ -23,16 +23,23 @@ codesdir = codesdir + '/'
 print, 'using all_harps_with_noaa_ars.txt file in: ', codesdir 
 endif 
 
-file = codesdir+'all_harps_with_noaa_ars.txt'
+;
+fsearch = file_search(codesdir, 'all_harps_with_noaa_ars.txt', count=fcount)
+if (fcount eq 0) then begin 
+  print, 'all_harps_with_noaa_ars.txt file not found in codesdir'
+  stop 
+endif 
+file = fsearch[0]
 
 ; --- check keyword: update ---
 ; download the latest txt file from jsoc
 if keyword_set(update) then begin 
-print, 'update requested'
-print, 'downloading the latest all_harps_with_noaa_ars.txt file from jsoc'
-link='http://jsoc.stanford.edu/doc/data/hmi/harpnum_to_noaa/all_harps_with_noaa_ars.txt'
-spawn, 'rm ' + file   ; delete the old file
-spawn, 'wget ' + link + ' -P ' + codesdir ;save the new file in codesdir
+  print, 'update requested'
+  print, 'downloading the latest all_harps_with_noaa_ars.txt file from jsoc'
+  link='http://jsoc.stanford.edu/doc/data/hmi/harpnum_to_noaa/all_harps_with_noaa_ars.txt'
+  spawn, 'rm ' + file   ; delete the old file
+  spawn, 'wget ' + link + ' -P ' + codesdir + 'libs/hmi/';save the new file in codesdir
+  fsearch = file_search(codesdir, 'all_harps_with_noaa_ars.txt')
 endif 
 
 ; --- find the harp number for a given noaa ---
@@ -41,6 +48,12 @@ endif
 
 readcol,file, harp_list,noaa_1,format='u,u',/silent 
 pos = where(noaa_1 eq uint(noaa))
+
+; fix for condition when the noaa number returns multiple values in column 1
+if n_elements(pos) gt 1 then begin 
+  print, 'multiple values returned, using first element'
+  pos = pos[0]
+endif  
 
 if ( pos eq -1) then begin
 	readcol,file, harp_list,noaa_1,noaa_2,format='u,u',/silent 
