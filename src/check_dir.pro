@@ -9,7 +9,7 @@ pro check_dir, dir
   ; eg check_dir, datadir should print -> datadir : ....
 
 if not(file_test(dir,/directory)) then begin 
-  spawn,   'mkdir '+ dir 
+  spawn,   'mkdir -p'+ dir 
 endif else begin 
   print, 'Directory: ', dir + ' already exists!'
 endelse 
