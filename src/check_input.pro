@@ -110,7 +110,7 @@ endif
 ;     else check_file, datadir + savfile
 ; endif
 
-if (crop eq 'input') then begin 
+if (check_crop eq 'no') then begin 
   ; should be same as crop_data
   xys = strtrim(xsize,2) + '_' + strtrim(ysize,2) + '_' + strtrim(fix(scl),2)
   nx = fix(xsize / scl)
@@ -144,7 +144,7 @@ print, 'event = ', event
 print, 'time  = ', tobs 
 print, 'event directory  = ', eventdir + '/'
 print, 'output directory = event dir + ', outdir.substring(eventdir.strlen()+1)
-print, 'run id = ', id
+print, 'run id = ', id.substring(0,-2)
 if (dataformat eq 'sav') then print, 'input file = ', savefile
 print, ' '
 

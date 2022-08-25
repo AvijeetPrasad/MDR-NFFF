@@ -11,7 +11,7 @@ pro rescale_data, data, cropsav, scaled_data,index=index, solx=solcx, soly=solcy
 ; DONE 022/08/18: 8make code more flexible for non HMI data
 
 isf = obj_new('IDL_Savefile', filename = cropsav)
-isf->restore, ['datadir','run','xorg','yorg','xsize','ysize','scl','nx','ny']
+isf->restore, ['outdir','run','xorg','yorg','xsize','ysize','scl','nx','ny']
 obj_destroy, isf
 
 ; file = datadir + run + segment + '.fits'
