@@ -1,4 +1,4 @@
-pro crop_data, data, input_vars, cropsav=cropsav, segment=segment
+pro crop_data, data, input_vars, cropsav=cropsav
 
 ; author : Avijeet Prasad
 ; created on : 2022-08-02
@@ -12,16 +12,10 @@ pro crop_data, data, input_vars, cropsav=cropsav, segment=segment
 ;--- Reading input variables ---
 ;restore the input parameter file
 isf = obj_new('IDL_Savefile', filename = input_vars)
-isf->restore, ['datadir','run','source','id']
+isf->restore, ['outdir','datadir','run','source','id']
 obj_destroy, isf
 ; source = ds.substring(0,2)
 
-; if (source eq 'hmi') then begin 
-; 	if (n_elements(segment) eq 0) then segment = 'Br'
-; 	read_sdo, datadir + run + segment + '.fits', index, data
-; endif else begin 
-; 	data = segment
-; endelse
 
 ;______________________ Cropping the field to optimum size ____________________
 ss = size(data)
@@ -46,10 +40,7 @@ while (cropin ne 'y') do begin
 	read, yorg, prompt  = 'new yorg   =  '
 	cropped_data = data[xorg:(xorg+xsize-1),yorg:(yorg+ysize-1)]
 	plot_image, cropped_data
-	if (source eq 'hmi') then begin
-	 if (segment eq 'bz') then $
-		print,'mean Bz    = ' + string(mean(cropped_data))		
-	endif
+	print,'mean = ', mean(cropped_data)
 	read, cropin, prompt = 'is the cropping fine? y(yes)/n(no): '
 endwhile
 
@@ -76,9 +67,9 @@ print, ' final nx = ' + string(nx)
 print, ' final ny = ' + string(ny)
 
 xys = strtrim(xsize,2) + '_' + strtrim(ysize,2) + '_' + strtrim(fix(scl),2)
-cropsav = datadir + run + id + 'crop.sav'
-save, datadir, run, xsize, ysize, xorg, yorg, scl, nx, ny, xys, $
-	description = 'Cropping details for the segment',$
+cropsav = outdir + run + id + 'crop.sav'
+save, outdir, run, xsize, ysize, xorg, yorg, scl, nx, ny, xys, $
+	description = 'Cropping details for the data',$
 	filename = cropsav
 print, 'New crop details saved in: ', cropsav
 end
