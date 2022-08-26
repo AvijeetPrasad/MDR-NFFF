@@ -96,11 +96,13 @@ if (dataformat eq 'sav') then begin
     print, 'sav file found in temp directory, copying it to outdir'
     file_copy, tmpdir + savfile, outdir + savfile, /overwrite
   endif else begin 
-    check2 = file_test(outdir + savfile)
+    check2 = file_test(savdir + savfile)
     if not check2 then begin 
       print, 'sav file not found'
       stop 
-    endif 
+    endif else begin
+      file_copy, savdir + savfile, outdir + savfile, /overwrite
+    endelse
   endelse  
 endif 
 
@@ -122,12 +124,16 @@ if (check_crop eq 'no') then begin
 endif  
 
 ; --- If not specified find harp number for sharp cutouts ---
-noaa     = strmid(event,2,5)	; NOAA number of the AR, read from event
-if (n_elements (harp) eq 0) then begin
-  findharp, noaa, harp
-endif else begin
-  print, 'harp = ', harp 
-endelse 
+if (event eq 'QS') then begin 
+  harp = 0
+endif else begin 
+  noaa = strmid(event,2,5)	; NOAA number of the AR, read from event
+  if (n_elements (harp) eq 0) then begin
+    findharp, noaa, harp
+  endif else begin
+    print, 'harp = ', harp 
+  endelse 
+endelse
 
 cls 
 if (mode eq 'analysis') then begin 

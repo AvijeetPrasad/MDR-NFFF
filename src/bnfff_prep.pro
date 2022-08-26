@@ -78,8 +78,6 @@ nz = fix(nz)
 xyz  = strtrim(fix(nx),2) + '_' + strtrim(fix(ny),2) + '_' + strtrim(nz,2) + '_'
 suff = run + id + xyz 
 
-stop 
-
 if isa(index) then begin
 	rescale_data, bz, cropsav, bz0, index=index, solx=solx, soly=soly
 	rescale_data, bx, cropsav, bx0, index=index
