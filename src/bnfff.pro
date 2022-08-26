@@ -7,7 +7,7 @@ pro bnfff
 ;-
 @compile_routine
 ;include the input parameter file
-codesdir = '/mn/stornext/d18/RoCS/avijeetp/codes/extrapolation/MDR-NFFF/src/'
+codesdir = '/mn/stornext/d18/RoCS/avijeetp/codes/extrapolation/'
 input = codesdir + 'input.pro'
 check_input, input, input_vars = input_vars
 restore, input_vars,/v 

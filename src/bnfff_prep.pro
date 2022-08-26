@@ -14,18 +14,18 @@ isf = obj_new('IDL_Savefile', filename = input_vars)
 ;print the variables saved in the input file
 print, isf->names() 
 ; restore the paths
-isf->restore,['datadir','run','ds','event','time','download','crop','harp','id']
+isf->restore,['datadir','run','ds','event','time','check_crop','harp','id','dataformat']
 ;restore download
-if (download eq 'no') then isf->restore, 'savfile'
+if (dataformat eq 'sav') then isf->restore, 'savfile'
 ; restore crop parameters
-if (crop eq 'no') then $
+if (check_crop eq 'no') then $
 isf->restore, 'cropsav'
 ; destroy object
 obj_destroy, isf
 
 ;=== Downloading/Restoring data ===
 if (ds eq 'hmi.sharp_cea_720s') then begin 
-	if (download eq 'yes') then begin 
+	if (dataformat eq 'fits') then begin 
 		print, '=== downloaing files from JSOC ==='
 		segments = ['Br', 'Bp', 'Bt', 'Dopplergram', 'continuum']
 		seg_length = n_elements(segment)
@@ -61,25 +61,24 @@ endif else begin
 endelse 
 
 ; === Cropping the field of view ===
-if (crop eq 'yes') then begin 
+if (check_crop eq 'yes') then begin 
 	print, '=== cropping fov ==='
-	crop_data, bz, input_vars, cropsav = cropsav, segment='bz'
-	read, nz, prompt='enter height nz =  '
-	nz = fix(nz)
+	crop_data, bz, input_vars, cropsav = cropsav
 endif	else begin 
 	cropsav = datadir + run + id + 'crop.sav'
 endelse 
 
 isf = obj_new('IDL_Savefile', filename = cropsav)
 isf->restore, ['xorg','yorg','xsize','ysize','scl','nx','ny','xys']
-if (crop eq 'no') then begin 
-	isf->restore, 'nz'
-	nz = fix (nz / scl)
-endif 
 obj_destroy, isf
+
+read, nz, prompt='enter height nz =  '
+nz = fix(nz)
 
 xyz  = strtrim(fix(nx),2) + '_' + strtrim(fix(ny),2) + '_' + strtrim(nz,2) + '_'
 suff = run + id + xyz 
+
+stop 
 
 if isa(index) then begin
 	rescale_data, bz, cropsav, bz0, index=index, solx=solx, soly=soly
@@ -90,11 +89,14 @@ if isa(index) then begin
 		rescale_data, dopp, cropsav, index=index, dopp0
 		rescale_data, cont, cropsav, index=index, cont0
 	endif 
-endif else begin 
-		rescale_data, bz, cropsav, bz0
-		rescale_data, bx, cropsav, bx0
-		rescale_data, by, cropsav, by0 
-endelse 
+endif 
+;2022/08/25: no need to rescale data if reading directly from sav?
+;TODO ask for rescaling explicitly!
+;else begin 
+		; rescale_data, bz, cropsav, bz0
+		; rescale_data, bx, cropsav, bx0
+		; rescale_data, by, cropsav, by0 		
+;endelse  
 
 ;=== Calculation of Jz at the bottom boundary ===
 xx = findgen(nx)

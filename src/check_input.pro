@@ -145,7 +145,7 @@ print, 'time  = ', tobs
 print, 'event directory  = ', eventdir + '/'
 print, 'output directory = event dir + ', outdir.substring(eventdir.strlen()+1)
 print, 'run id = ', id.substring(0,-2)
-if (dataformat eq 'sav') then print, 'input file = ', savefile
+if (dataformat eq 'sav') then print, 'input file = ', savfile
 print, ' '
 
 input_vars = outdir + run + id + 'input_vars.sav' 

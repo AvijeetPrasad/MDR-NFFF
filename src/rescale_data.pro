@@ -8,7 +8,7 @@ pro rescale_data, data, cropsav, scaled_data,index=index, solx=solcx, soly=solcy
 ; output :
 ; updates : 
 ; DONE 2022/08/18: remove @input file dependence
-; DONE 022/08/18: 8make code more flexible for non HMI data
+; DONE 022/08/18: make code more flexible for non HMI data
 
 isf = obj_new('IDL_Savefile', filename = cropsav)
 isf->restore, ['outdir','run','xorg','yorg','xsize','ysize','scl','nx','ny']
