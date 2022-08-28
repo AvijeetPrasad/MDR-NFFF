@@ -15,7 +15,7 @@ pro hmi_download, segment, input_vars
 
 ; --- Input files to set the parameters ---
 isf = obj_new('IDL_Savefile', filename = input_vars)
-isf->restore, ['tstart','ds','harp','datadir','run']
+isf->restore, ['tobs','ds','harp','datadir','run']
 obj_destroy, isf
 
 ; --- DOWNLOADING HMI DATA ---
@@ -31,7 +31,7 @@ endif
 seg_length = n_elements(segment)
 
 for i = 0, seg_length - 1 do begin 
-	harp2fits, segment[i], tstart, ds, harp, datadir, run
+	harp2fits, segment[i], tobs, ds, harp, datadir, run
 endfor 
 
 print, '====================================='

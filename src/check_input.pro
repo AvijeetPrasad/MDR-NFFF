@@ -76,7 +76,8 @@ if (proc eq 'bnfff') then begin
 endif  
 
 if (proc eq 'hmi_vplot') then begin
-	outdir  = eventdir + '/plots/'
+  datadir = eventdir + '/extrapolation/' + time + '/'
+	outdir  = datadir  
 	outfile = 'HMI_' + event + '_' + time
 endif
 
