@@ -62,7 +62,7 @@ eventdir = projectdir + event
 
 ; define a local temp directory for the folder where data would be temporarily
 ; saved. this would be the default location to check for savfiles
-tmpdir = projectdir + '/data/'
+tmpdir = projectdir + 'data/'
 
 if (proc eq 'ambig') then begin
   outdir    = eventdir + '/ambig/' + time + '/'
