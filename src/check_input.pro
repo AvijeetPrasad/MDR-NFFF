@@ -168,8 +168,10 @@ print, ' '
 input_vars = outdir + run + id + 'input_vars.sav' 
 input_check = ' '
 ; do not check inputs for time series run with index greater than 0
-if (isa(index) and (index gt 0)) then input_check = 'y' $
-else read, input_check, prompt='Do the parameters look correct (y/n)? : '
+if (isa(index)) then begin 
+  if (index gt 0) then input_check = 'y' $
+  else read, input_check, prompt='Do the parameters look correct (y/n)? : '
+endif else read, input_check, prompt='Do the parameters look correct (y/n)? : '
 if (input_check eq 'y') then begin
   ; --- save the input file in the outdir
   outfile = outdir + run + id + 'input.pro' 
