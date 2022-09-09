@@ -37,7 +37,7 @@ for i = 0, seg_length - 1 do begin
 	;* check if the file already exists
 	ff = findfile(tmpfile,count=count)
 	if (count eq 1) then begin
-  	spawn,'mv ' + tmpfile + ' ' + outfile
+  	spawn,'cp ' + tmpfile + ' ' + outfile
 	endif  else harp2fits, segment[i], tobs, ds, harp, datadir, run
 endfor 
 

@@ -1,7 +1,7 @@
 pro bnfff
 
 ;+created: Oct 08, 2021 by Avijeet Prasad
-; TODO 2022/08/15 streamline all the steps and remove redundant code
+
 ; 
 ;Compile the routines called in this program
 ;-
