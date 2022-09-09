@@ -1,4 +1,4 @@
-pro check_input, input, input_vars=input_vars
+pro check_input, input, input_vars=input_vars, index = index
 
 ;+ 
 ; name: check_input
@@ -10,7 +10,7 @@ pro check_input, input, input_vars=input_vars
 ;
 ; inputs: 
 ;        input: full path of the input parameter file
-;
+;        index: (optional) time index of the time series runs
 ; outputs:
 ;         input_vars: an idl sav file containing all the input parameters 
 ;         required for the run.
@@ -42,10 +42,21 @@ endif else print, '=== Reading input file ==='
 
 @input  ; <--- Include the input file
 
+;--- Check for time series option ---
+if (keyword_set (index)) then print, 'Time series run, index = ', index
+if (n_elements(tobs) gt 1) then begin
+  tstart = tobs[0]
+  tend = tobs[1]
+  if n_elements(tobs) eq 3 then cad = tobs[2]
+  mktseq, tstart, tend, tseq, times, nt, cad=cad
+  tobs = tseq[index]
+endif
+
 ; --- Setup paths for saving output ---
 ; formatted time string from observation time
 mktime, tobs, time, jsoc_time 
 
+stop 
 ; generate a unique run id from timestamp if not defined in the input file
 ; mode is automatically set to analysis if id is specified
 if isa(id) then begin 

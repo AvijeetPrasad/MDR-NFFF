@@ -4,7 +4,7 @@ pro mktseq, tstart, tend, tseq, times, nt, cad=cad
 ;
 ; purpose: generate time-sequences based on start time, end time and cadence
 ;
-; calling sequence: mktseq, tstart, tend, tstartseq, times, nt, cad=cad
+; calling sequence: mktseq, tstart, tend, tseq, times, nt, cad=cad
 ;
 ; inputs: 
 ;        tstart: start time , eg. '23:00 06-mar-2012'
