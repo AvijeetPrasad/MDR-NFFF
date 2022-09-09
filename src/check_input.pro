@@ -23,7 +23,7 @@ pro check_input, input, input_vars=input_vars
 
 ; check if input parameter is specified
 if (not (isa(input))) then begin 
-  codesdir='/mn/stornext/d18/RoCS/avijeetp/codes/extrapolation/'
+  codesdir='/mn/stornext/u3/avijeetp/codes/idl/extrapolation/'
   ;input = codesdir + 'input.pro'
   input = file_search(codesdir, 'input.pro', count=fcount)
   print, 'Input file not specified, using: ', input
@@ -163,6 +163,14 @@ if (input_check eq 'y') then begin
   outfile = outdir + run + id + 'input.pro' 
   file_copy, 'input.pro', outfile, /overwrite ;save the file
   print, 'input file saved in: ', outfile
+
+  ;Optionally save a copy in include folder of the codesdir for future reference
+  if (file_test(codesdir + 'include',/directory)) then begin 
+    include_copy = codesdir + 'include/in_' + proc + '_' + event $
+      + '_' + ds.substring(0,2) + '.pro' 
+    file_copy, 'input.pro', include_copy, /overwrite 
+  endif 
+
 endif else begin 
   print, 'Please re-enter the parameters'
   stop 
