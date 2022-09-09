@@ -56,7 +56,6 @@ endif
 ; formatted time string from observation time
 mktime, tobs, time, jsoc_time 
 
-stop 
 ; generate a unique run id from timestamp if not defined in the input file
 ; mode is automatically set to analysis if id is specified
 if isa(id) then begin 
@@ -168,7 +167,9 @@ print, ' '
 
 input_vars = outdir + run + id + 'input_vars.sav' 
 input_check = ' '
-read, input_check, prompt='Do the parameters look correct (y/n)? : '
+; do not check inputs for time series run with index greater than 0
+if (isa(index) and (index gt 0)) then input_check = 'y' $
+else read, input_check, prompt='Do the parameters look correct (y/n)? : '
 if (input_check eq 'y') then begin
   ; --- save the input file in the outdir
   outfile = outdir + run + id + 'input.pro' 
