@@ -26,14 +26,9 @@ codesdir = '/mn/stornext/u3/avijeetp/codes/idl/extrapolation/'
 input = codesdir + 'input.pro'
 
 @input  ; <--- Include the input file
+check_input, input, input_vars = input_vars, index=0
+restore, input_vars,/v 
 
-eventdir = projectdir + event
-tstart = tobs[0]
-tend = tobs[1]
-cad = tobs[2]
-mktseq, tstart, tend, tseq, times, nt, cad=cad
-tsdir =  projectdir + event + '/extrapolation/ts_' + times[0] + '_' + times[-1] +'/'
-check_dir, tsdir
 if not isa(ids) then begin 
   ids = strarr(nt)
   id =ids[0]
