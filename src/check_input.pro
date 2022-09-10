@@ -51,7 +51,7 @@ eventdir = projectdir + event
 tmpdir = projectdir + 'data/'
 
 ;--- Check for time series option ---
-if (keyword_set (index)) then print, 'Time series run, index = ', index
+if isa(index) then  print, 'Time series run, index = ', index
 if (n_elements(tobs) gt 1) then begin
   tstart = tobs[0]
   tend = tobs[1]
