@@ -42,6 +42,14 @@ endif else print, '=== Reading input file ==='
 
 @input  ; <--- Include the input file
 
+; setup output directory for different procedures
+; define an event directory
+eventdir = projectdir + event
+
+; define a local temp directory for the folder where data would be temporarily
+; saved. this would be the default location to check for savfiles
+tmpdir = projectdir + 'data/'
+
 ;--- Check for time series option ---
 if (keyword_set (index)) then print, 'Time series run, index = ', index
 if (n_elements(tobs) gt 1) then begin
@@ -50,6 +58,9 @@ if (n_elements(tobs) gt 1) then begin
   if n_elements(tobs) eq 3 then cad = tobs[2]
   mktseq, tstart, tend, tseq, times, nt, cad=cad
   tobs = tseq[index]
+  ;create a directory to hold the time series run info
+  tsdir = eventdir + '/extrapolation/' + times[0] + '_' + times[-1] +'/'
+  check_dir, tsdir ; check time series directory
 endif
 
 ; --- Setup paths for saving output ---
@@ -65,14 +76,6 @@ endif else id  = strtrim(round(systime(/seconds)),1) + '_'
 
 ; create a suffix string based on the event, time, dataset and procedure
 run = event + '_' + time + '_' + ds +'_' + proc + '_' 
-
-; setup output directory for different procedures
-; define an event directory
-eventdir = projectdir + event
-
-; define a local temp directory for the folder where data would be temporarily
-; saved. this would be the default location to check for savfiles
-tmpdir = projectdir + 'data/'
 
 if (proc eq 'ambig') then begin
   outdir    = eventdir + '/ambig/' + time + '/'
