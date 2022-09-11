@@ -1,6 +1,25 @@
 pro    mktime, tstart, time, jsoc_time
-;Decription: Take input of the type tstart  = '21:24 18-dec-2014'
+;+ 
+; name: mktime
+;
+; purpose: Take input of the type tstart  = '21:24 18-dec-2014'
 ;   and return formatted output
+;
+; calling sequence: mktime, tstart, time, jsoc_time
+;
+; inputs: 
+;        tstart: input of the type '21:24 18-dec-2014'
+;
+; outputs:
+;         time: formatted output eg. 04_01_2015_h1524
+;         jsoc_time: formatted output eg. 20150104_152400_TAI.
+;
+; author : Avijeet Prasad
+; created on : 2022-09-11
+;
+; updates :
+;-
+;Decription: 
 
     t1=anytim(tstart,/ecs)
     yy=strmid(t1,0,4)
