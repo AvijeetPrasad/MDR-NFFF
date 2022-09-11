@@ -1,39 +1,45 @@
-pro sav2vdc, bsav, insav=insav
+pro sav2vdc, bsav, insav=insav, numts=numts, ts=ts, vdcfile=vdcfile
 
-	;+
-  ; NAME: sav2vdc
-  ; PURPOSE: writes a VDC (VAPOR 3) output from an IDL sav file
-  ; Avijeet Prasad
-  ; 2022-05-08
-  ;-
+;+ 
+; name: sav2vdc
+;
+; purpose: writes a VDC (VAPOR 3) output from an IDL sav file
+;
+; calling sequence: 
+;
+; inputs: 
+;         bsav: sav file containing the magnetic field input
+;         insav: sav file containing the input variable data 
+;         numts: (optional) number of time steps for time series run (default: 1)
+;         ts: (optional) current time step in time series (default: 0)
+;         vdcfile: (optional) name of the vdcfile to be saved
+;
+; outputs: creates a vdc file and a data folder in outdir
+;
+; author : Avijeet Prasad
+; created on : 2022-09-11
+;
+; updates :
+;-
 
-;--- Include the input file ---
-;@include/in_ar12017_hmlf
-;@include/in_muram_spd2
-;@include/in_ar11515
-;@include/in_ar12418_spd_cospar
-; @input
-; @compile_routine
+; Check keywords and set default values
+if not keyword_set(numts) then numts = '1'
+if not keyword_set(ts) then ts = '0'
 
-; ;--- Read and restore the input sav file ---
-; ;savfile = datadir + run + '.sav'
-; suff = run+'vectorb_'+xysize
-; suffz = suff+'_'+strtrim(nz,1)
-; savefile = datadir+'bnfff_'+suffz+'.sav'
-; ;TODO check_sav, savfile, savfile ;check and rename the variables.
-; print, '=== Restoring ' + savefile + ' ==='
-; restore, savefile,/v
-
+;--- Read and restore the input sav file ---
 isf = obj_new('IDL_Savefile', filename = bsav)
 isf->restore,['bx','by','bz']  
 obj_destroy, isf
 
 isf = obj_new('IDL_Savefile', filename = insav)
 print, isf->names()
-isf->restore,['datadir','run','id','current','decay','qfactor']  
+isf->restore,['outdir','run','id','current','decay','qfactor']  
 obj_destroy, isf
 
-; ;--- Switches for calculations ---
+; Set vdcfile path if not given as input
+if not keyword_set(vdcfile) then vdcfile = outdir + run + id + dims + '.vdc'
+
+; ;--- Switches for calculations --- 
 ; lor = 0
 ; cur = 0
 ; di  = 0
@@ -55,14 +61,12 @@ dim = [nx,ny,nz]
 dims = strtrim(nx,1) + "_" + strtrim(ny,1) + "_" +strtrim(nz,1) 
 ;suffz2 = event + '_' + time + '_'+'vectorb_'+dims
 
-;varfile = datadir + suffz + "_vars.sav"
-;save, hd, suff, datadir, qfactor, di, lor, cur, ss, nx, ny, nz, $
+;varfile = outdir + suffz + "_vars.sav"
+;save, hd, suff, outdir, qfactor, di, lor, cur, ss, nx, ny, nz, $
 ;codesdir, dim, suffz, dims, nbridges, filename=varfile
-
-vdcfile = datadir + run + id + dims + '.vdc'
 ;vdc_prep, varfile, vdcfile
 
-numts = '1'
+; numts = nt
 dimension = strtrim(nx,1) + "x" + strtrim(ny,1) + "x" +strtrim(nz,1)
 vars = 'bx:by:bz'
 
@@ -72,40 +76,53 @@ if (qfactor eq 1) then vars += ':slq:tw'
 
 ;vdccreate -dimension 272x136x136 -numts 1 -vars3d bx:by:bz test.vdc
 ;raw2vdc -ts 0 -varname bx bipole_hmi_res.vdc fbx_hmi_res.raw
- 
-spawn, 'vdccreate -force -dimension ' + dimension + ' -numts ' + numts $
-  + ' -vars3d ' + vars + ' ' + vdcfile
 
-write_raw2vdc, vdcfile, 'float64', 'bx', bx 
-write_raw2vdc, vdcfile, 'float64', 'by', by 
-write_raw2vdc, vdcfile, 'float64', 'bz', bz
+; Open a new vdc file for writing  
+if (ts eq '0') then begin
+  ; If time step = 0, check if vdc file already exists and remove it
+  if file_test(vdcfile) then begin
+    file_delete, vdcfile
+    vdcdir = vdcfile.substring(0,-5) + '_data'
+    file_delete, vdcdir, /recursive
+  endif
+   
+  ; Open the new vdcfile for writing
+  print, 'new vdc file created in: ', vdcfile
+  spawn, 'vdccreate -force -dimension ' + dimension + ' -numts ' + numts $
+  + ' -vars3d ' + vars + ' ' + vdcfile  
+endif
+
+; Write the magnetic field variables 
+write_raw2vdc, vdcfile, 'float64', 'bx', bx, ts=ts
+write_raw2vdc, vdcfile, 'float64', 'by', by, ts=ts 
+write_raw2vdc, vdcfile, 'float64', 'bz', bz, ts=ts
 
 if (current eq 1) then begin 
   print, 'Calculating current'
   curl, bx, by, bz, jx, jy, jz, order = 2
-  write_raw2vdc, vdcfile, 'float64', 'jx', jx 
-  write_raw2vdc, vdcfile, 'float64', 'jy', jy 
-  write_raw2vdc, vdcfile, 'float64', 'jz', jz
+  write_raw2vdc, vdcfile, 'float64', 'jx', jx, ts=ts 
+  write_raw2vdc, vdcfile, 'float64', 'jy', jy, ts=ts 
+  write_raw2vdc, vdcfile, 'float64', 'jz', jz, ts=ts
 endif
 
 if (decay eq 1) then begin 
-  disav = datadir + run + 'di.sav'
+  disav = outdir + run + 'di.sav'
   restore, disav,/v
-  write_raw2vdc, vdcfile, 'float32', 'di', di
+  write_raw2vdc, vdcfile, 'float32', 'di', di, ts=ts
 endif 
 
 if (qfactor eq 1) then begin
-  qfsav = datadir + run + id + 'qfactor.sav'
+  qfsav = outdir + run + id + 'qfactor.sav'
   ;print, 'Calculating Q factor'
   ;cal_qfactor, bx, by, bz, qfsav=qfsav, vars=insav
   restore, qfsav
-  write_raw2vdc, vdcfile, 'float32', 'slq', slq
-  write_raw2vdc, vdcfile, 'float32', 'tw', tw
+  write_raw2vdc, vdcfile, 'float32', 'slq', slq, ts=ts
+  write_raw2vdc, vdcfile, 'float32', 'tw', tw, ts=ts
 endif
 
 ;vdfdata = suffz + "_data"
-;file_move, vdffile, datadir + vdffile, /overwrite
-;file_move, vdfdata, datadir + vdfdata, /overwrite
+;file_move, vdffile, outdir + vdffile, /overwrite
+;file_move, vdfdata, outdir + vdfdata, /overwrite
 
 ;print, '=== RUN COMPLETE! ==='
 ;stop

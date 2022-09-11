@@ -69,23 +69,41 @@ if (mode eq 'analysis') then begin
     if not file_test(tssav) then save, ids, inputs, filename = tssav
   endelse   
   for t = 0, nt - 1 do begin
+    print, '----------------------------------------------'
     print, 't = ' + strtrim(t+1,2) + ' out of ' + strtrim(nt,2)
     print, 'time = ', tseq[t]
+    print, '----------------------------------------------'
+
+    ; setup the time step and id
     time = times[t]
-    id = ids[t]+'_'
-  
+    id = ids[t]
+    if (id.substring(-1) ne '_') then id = id + '_'
+
+    ; ensure that numts and ts are strings passed without trailing spaces
+    numts = strtrim(nt,2)
+    ts = strtrim(t,2)
+
+    ; restore the magnetic field data and input variables file
     outdir   = eventdir + '/extrapolation/' + time + '/'
     run = event + '_' + time + '_' + ds +'_' + proc + '_' 
-    bnfffsav = file_search(outdir + run + id + '*_Bnfff.sav')
+    input_vars = outdir + run + id + 'input_vars.sav' 
 
+    bnfffsav = file_search(outdir + run + id + '*_Bnfff.sav')
     isf = obj_new('IDL_Savefile', filename = bnfffsav)
     isf->restore,['bx','by','bz']  
     obj_destroy, isf
 
-    input_vars = outdir + run + id + 'input_vars.sav' 
+    ; calculate decay index
     if (decay   eq 1) then  cal_di, bx, by, bz, disav=disav, vars=input_vars
+    ; calculate qfactor
     if (qfactor eq 1) then cal_qfactor, bx, by, bz, qfsav=qfsav, vars=input_vars 
-    if (vapor eq 1) then sav2vdc, bnfffsav, insav=input_vars 
+    ; write the vapor output
+    if (vapor eq 1) then begin 
+      ; single file outputs for each time step
+      sav2vdc, bnfffsav, insav=input_vars
+      ; combined vdf file for all time steps
+      sav2vdc, bnfffsav, insav=input_vars, numts=numts, ts=ts, vdcfile=vdcfile
+    endif 
 
   endfor 
 endif
