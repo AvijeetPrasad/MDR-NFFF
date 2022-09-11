@@ -1,4 +1,4 @@
-pro sav2vdc, bsav, insav=insav, numts=numts, ts=ts, vdcfile=vdcfile
+pro sav2vdc, bsav, insav=insav, numts=numts, ts=ts, vdcfile=vdcfile, savts=savts
 
 ;+ 
 ; name: sav2vdc
@@ -13,7 +13,7 @@ pro sav2vdc, bsav, insav=insav, numts=numts, ts=ts, vdcfile=vdcfile
 ;         numts: (optional) number of time steps for time series run (default: 1)
 ;         ts: (optional) current time step in time series (default: 0)
 ;         vdcfile: (optional) name of the vdcfile to be saved
-;
+;         savts: (optional) for taking inputs from time series
 ; outputs: creates a vdc file and a data folder in outdir
 ;
 ; author : Avijeet Prasad
@@ -36,6 +36,12 @@ isf = obj_new('IDL_Savefile', filename = insav)
 isf->restore,['outdir','run','id','current','decay','qfactor']  
 obj_destroy, isf
 
+if keyword_set(savts) then begin 
+  isf = obj_new('IDL_Savefile', filename = savts)
+  isf->restore,['current','decay','qfactor']  
+  obj_destroy, isf
+endif 
+ 
 ; ;--- Switches for calculations --- 
 ; lor = 0
 ; cur = 0
@@ -86,12 +92,13 @@ if (ts eq '0') then begin
     file_delete, vdcdir, /recursive
   endif
   ; print all the variables to be saved 
-  print, 'vars =  ', vars 
+  
   ; Open the new vdcfile for writing
   print, 'new vdc file created in: ', vdcfile
   spawn, 'vdccreate -force -dimension ' + dimension + ' -numts ' + numts $
   + ' -vars3d ' + vars + ' ' + vdcfile  
 endif
+print, 'vars =  ', vars 
 
 ; Write the magnetic field variables 
 write_raw2vdc, vdcfile, 'float64', 'bx', bx, ts=ts

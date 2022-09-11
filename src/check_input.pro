@@ -1,4 +1,4 @@
-pro check_input, input, input_vars=input_vars, index = index
+pro check_input, input, input_vars=input_vars, ts_index = ts_index
 
 ;+ 
 ; name: check_input
@@ -10,7 +10,7 @@ pro check_input, input, input_vars=input_vars, index = index
 ;
 ; inputs: 
 ;        input: full path of the input parameter file
-;        index: (optional) time index of the time series runs
+;        ts_index: (optional) time index of the time series runs
 ; outputs:
 ;         input_vars: an idl sav file containing all the input parameters 
 ;         required for the run.
@@ -51,17 +51,19 @@ eventdir = projectdir + event
 tmpdir = projectdir + 'data/'
 
 ;--- Check for time series option ---
-if isa(index) then  print, 'Time series run, index = ', index
-if (n_elements(tobs) gt 1) then begin
-  tstart = tobs[0]
-  tend = tobs[1]
-  if n_elements(tobs) eq 3 then cad = tobs[2]
-  mktseq, tstart, tend, tseq, times, nt, cad=cad
-  tobs = tseq[index]
-  ;create a directory to hold the time series run info
-  tsdir = eventdir + '/extrapolation/' + times[0] + '_' + times[-1] +'/'
-  check_dir, tsdir ; check time series directory
-endif
+if isa(ts_index) then  begin 
+  print, 'Time series run, index = ', ts_index
+  if (n_elements(tobs) gt 1) then begin
+    tstart = tobs[0]
+    tend = tobs[1]
+    if n_elements(tobs) eq 3 then cad = tobs[2]
+    mktseq, tstart, tend, tseq, times, nt, cad=cad
+    tobs = tseq[ts_index]
+    ;create a directory to hold the time series run info
+    tsdir = eventdir + '/extrapolation/' + times[0] + '_' + times[-1] +'/'
+    check_dir, tsdir ; check time series directory
+  endif
+endif 
 
 ; --- Setup paths for saving output ---
 ; formatted time string from observation time
@@ -73,7 +75,7 @@ if isa(id) then begin
   id   = id + '_'
   mode = 'analysis' 
 endif else id  = strtrim(round(systime(/seconds)),1) + '_' 
-
+ 
 ; create a suffix string based on the event, time, dataset and procedure
 run = event + '_' + time + '_' + ds +'_' + proc + '_' 
 
@@ -170,9 +172,9 @@ print, ' '
 
 input_vars = outdir + run + id + 'input_vars.sav' 
 input_check = ' '
-; do not check inputs for time series run with index greater than 0
-if (isa(index)) then begin 
-  if (index gt 0) then input_check = 'y' $
+; do not check inputs for time series run with ts_index greater than 0
+if (isa(ts_index)) then begin 
+  if (ts_index gt 0) then input_check = 'y' $
   else read, input_check, prompt='Do the parameters look correct (y/n)? : '
 endif else read, input_check, prompt='Do the parameters look correct (y/n)? : '
 if (input_check eq 'y') then begin

@@ -25,25 +25,24 @@ pro bnfffs
 codesdir = '/mn/stornext/u3/avijeetp/codes/idl/extrapolation/'
 input = codesdir + 'input.pro'
 
-@input  ; <--- Include the input file
-
+;@input  ; <--- Include the input file
 ; Check input and restore the input variables
-check_input, input, input_vars = input_vars, index=0
+check_input, input, input_vars = input_vars, ts_index=0
 restore, input_vars,/v 
 
 ; Check if a list of ids was provided at the input else initalize an array
 if not isa(ids) then ids = strarr(nt)
-id =ids[0]
+; id =ids[0]
 ; Check if the id has a trailing underscore else add it
 check_id = id.substring(-1) ne '_'
 if check_id then id = id + '_'
 ; Initialize an array for saving the inputs at various time steps
 inputs = strarr(nt)
 ; Define a file name for saving ids, and inputs for later use
-tssav = tsdir + event + '_' + id + 'ts.sav'
-;TODO add a condition to restore tssav from previous runs if the file exists
+savts = tsdir + event + '_' + id + 'ts.sav'
+;TODO add a condition to restore savts from previous runs if the file exists
 ; Give the file name for the vdc file for the entire time series
-vdcfile = tsdir + event + '_' + id + 'ts.vdc'
+  vdcfile = tsdir + event + '_' + id + 'ts.vdc'
 ;-----------------------
 if (mode eq 'calculate') then begin
   for t = 0, nt - 1 do begin 
@@ -57,18 +56,23 @@ if (mode eq 'calculate') then begin
     nonff2, input_vars, prepsav
     nonff25d, input_vars, prepsav, bnfffsav=bnfffsav
   endfor 
-  save, ids, inputs, filename = tssav
+  save, ids, inputs, current, qfactor, decay, filename = savts
 endif 
 
+;TODO add dims in the output vdc file usind check_dims procedure
 ;------------------------
 if (mode eq 'analysis') then begin
   if not isa(ids) then begin
-    checksav = file_test(tssav)
-    if (checksav) then restore, tssav,/v else print, 'ids not found!'
+    checksav = file_test(savts)
+    if (checksav) then restore, savts,/v else print, 'ids not found!'
   endif else begin 
     print, 'ids = ', n_elements(ids)
-    if not file_test(tssav) then save, ids, inputs, filename = tssav
+    if not file_test(savts) then begin 
+      save, ids, inputs, current, qfactor, decay, filename = savts
+    endif 
   endelse   
+  
+  ; Start of time loop 
   for t = 0, nt - 1 do begin
     print, '----------------------------------'
     print, 't = ' + strtrim(t+1,2) + ' out of ' + strtrim(nt,2)
@@ -102,13 +106,15 @@ if (mode eq 'analysis') then begin
     if (vapor eq 1) then begin 
       ; single file outputs for each time step
     ;  sav2vdc, bnfffsav, insav=input_vars
-      ; combined vdf file for all time steps
-      sav2vdc, bnfffsav, insav=input_vars, numts=numts, ts=ts, vdcfile=vdcfile
+      ; combined vdf file for all time steps 
+      sav2vdc, bnfffsav, insav=input_vars, numts=numts, ts=ts, vdcfile=vdcfile,$
+        savts=savts
     endif 
 
   endfor 
 endif
-
+input_copy = tsdir + event + '_' + id + 'input.pro'
+file_copy, 'input.pro', input_copy, /overwrite 
 
 print, '======================================'
 print, '    --------- RUN COMPLETE -------      '
