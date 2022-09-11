@@ -26,15 +26,22 @@ codesdir = '/mn/stornext/u3/avijeetp/codes/idl/extrapolation/'
 input = codesdir + 'input.pro'
 
 @input  ; <--- Include the input file
+
+; Check input and restore the input variables
 check_input, input, input_vars = input_vars, index=0
 restore, input_vars,/v 
 
-if not isa(ids) then begin 
-  ids = strarr(nt)
-  id =ids[0]
-endif 
+; Check if a list of ids was provided at the input else initalize an array
+if not isa(ids) then ids = strarr(nt)
+id =ids[0]
+; Check if the id has a trailing underscore else add it
+check_id = id.substring(-1) ne '_'
+if check_id then id = id + '_'
+; Initialize an array for saving the inputs at various time steps
 inputs = strarr(nt)
+; Define a file name for saving ids, and inputs for later use
 tssav = tsdir + event + '_' + id + '_tseries.sav'
+;TODO add a condition to restore tssav from previous runs if the file exists
 
 ;-----------------------
 if (mode eq 'calculate') then begin
