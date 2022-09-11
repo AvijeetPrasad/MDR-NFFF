@@ -69,13 +69,14 @@ endif	else begin
 endelse 
 
 isf = obj_new('IDL_Savefile', filename = cropsav)
-isf->restore, ['xorg','yorg','xsize','ysize','scl','nx','ny','xys','nz']
-obj_destroy, isf
-
-if not(isa(nz)) then begin
+isf->restore, ['xorg','yorg','xsize','ysize','scl','nx','ny','xys']
+if (check_crop eq 'no') then begin
+	isf->restore, 'nz' ; restore nz from the input file
+endif else begin ; else take input from user
 	read, nz, prompt='enter height nz =  '
   nz = fix(nz)
-endif
+endelse 
+obj_destroy, isf
 
 xyz  = strtrim(fix(nx),2) + '_' + strtrim(fix(ny),2) + '_' + strtrim(nz,2) + '_'
 suff = run + id + xyz 
