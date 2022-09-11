@@ -48,7 +48,7 @@ eventdir = projectdir + event
 
 ; define a local temp directory for the folder where data would be temporarily
 ; saved. this would be the default location to check for savfiles
-tmpdir = projectdir + 'data/'
+tmpdir = eventdir + '/data/'
 
 ;--- Check for time series option ---
 if isa(ts_index) then  begin 
