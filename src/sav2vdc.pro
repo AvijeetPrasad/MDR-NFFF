@@ -32,12 +32,9 @@ isf->restore,['bx','by','bz']
 obj_destroy, isf
 
 isf = obj_new('IDL_Savefile', filename = insav)
-print, isf->names()
+;print, isf->names()
 isf->restore,['outdir','run','id','current','decay','qfactor']  
 obj_destroy, isf
-
-; Set vdcfile path if not given as input
-if not keyword_set(vdcfile) then vdcfile = outdir + run + id + dims + '.vdc'
 
 ; ;--- Switches for calculations --- 
 ; lor = 0
@@ -60,6 +57,10 @@ nz = ss[3]
 dim = [nx,ny,nz]
 dims = strtrim(nx,1) + "_" + strtrim(ny,1) + "_" +strtrim(nz,1) 
 ;suffz2 = event + '_' + time + '_'+'vectorb_'+dims
+
+; Set vdcfile path if not given as input
+if not keyword_set(vdcfile) then vdcfile = outdir + run + id + dims + '.vdc'
+
 
 ;varfile = outdir + suffz + "_vars.sav"
 ;save, hd, suff, outdir, qfactor, di, lor, cur, ss, nx, ny, nz, $
