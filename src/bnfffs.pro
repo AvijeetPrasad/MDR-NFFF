@@ -40,10 +40,10 @@ if check_id then id = id + '_'
 ; Initialize an array for saving the inputs at various time steps
 inputs = strarr(nt)
 ; Define a file name for saving ids, and inputs for later use
-tssav = tsdir + event + '_' + id + '_ts.sav'
+tssav = tsdir + event + '_' + id + 'ts.sav'
 ;TODO add a condition to restore tssav from previous runs if the file exists
 ; Give the file name for the vdc file for the entire time series
-vdcfile = tsdir + event + '_' + id + '_ts.vdc'
+vdcfile = tsdir + event + '_' + id + 'ts.vdc'
 ;-----------------------
 if (mode eq 'calculate') then begin
   for t = 0, nt - 1 do begin 
