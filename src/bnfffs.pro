@@ -40,9 +40,10 @@ if check_id then id = id + '_'
 ; Initialize an array for saving the inputs at various time steps
 inputs = strarr(nt)
 ; Define a file name for saving ids, and inputs for later use
-tssav = tsdir + event + '_' + id + '_tseries.sav'
+tssav = tsdir + event + '_' + id + '_ts.sav'
 ;TODO add a condition to restore tssav from previous runs if the file exists
-
+; Give the file name for the vdc file for the entire time series
+vdcfile = tsdir + event + '_' + id + '_ts.vdc'
 ;-----------------------
 if (mode eq 'calculate') then begin
   for t = 0, nt - 1 do begin 
@@ -69,10 +70,10 @@ if (mode eq 'analysis') then begin
     if not file_test(tssav) then save, ids, inputs, filename = tssav
   endelse   
   for t = 0, nt - 1 do begin
-    print, '----------------------------------------------'
+    print, '----------------------------------'
     print, 't = ' + strtrim(t+1,2) + ' out of ' + strtrim(nt,2)
     print, 'time = ', tseq[t]
-    print, '----------------------------------------------'
+    print, '----------------------------------'
 
     ; setup the time step and id
     time = times[t]
@@ -94,13 +95,13 @@ if (mode eq 'analysis') then begin
     obj_destroy, isf
 
     ; calculate decay index
-    if (decay   eq 1) then  cal_di, bx, by, bz, disav=disav, vars=input_vars
+    ;if (decay   eq 1) then  cal_di, bx, by, bz, disav=disav, vars=input_vars
     ; calculate qfactor
-    if (qfactor eq 1) then cal_qfactor, bx, by, bz, qfsav=qfsav, vars=input_vars 
+   ; if (qfactor eq 1) then cal_qfactor, bx, by, bz, qfsav=qfsav, vars=input_vars 
     ; write the vapor output
     if (vapor eq 1) then begin 
       ; single file outputs for each time step
-      sav2vdc, bnfffsav, insav=input_vars
+    ;  sav2vdc, bnfffsav, insav=input_vars
       ; combined vdf file for all time steps
       sav2vdc, bnfffsav, insav=input_vars, numts=numts, ts=ts, vdcfile=vdcfile
     endif 

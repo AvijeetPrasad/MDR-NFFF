@@ -74,7 +74,6 @@ vars = 'bx:by:bz'
 if (current eq 1) then vars += ':jx:jy:jz'
 if (decay eq 1) then vars += ':di'
 if (qfactor eq 1) then vars += ':slq:tw'
-
 ;vdccreate -dimension 272x136x136 -numts 1 -vars3d bx:by:bz test.vdc
 ;raw2vdc -ts 0 -varname bx bipole_hmi_res.vdc fbx_hmi_res.raw
 
@@ -86,7 +85,8 @@ if (ts eq '0') then begin
     vdcdir = vdcfile.substring(0,-5) + '_data'
     file_delete, vdcdir, /recursive
   endif
-   
+  ; print all the variables to be saved 
+  print, 'vars =  ', vars 
   ; Open the new vdcfile for writing
   print, 'new vdc file created in: ', vdcfile
   spawn, 'vdccreate -force -dimension ' + dimension + ' -numts ' + numts $
