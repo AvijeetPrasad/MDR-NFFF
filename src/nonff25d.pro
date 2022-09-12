@@ -14,7 +14,7 @@ Common Block2,bx0,by0,bz0,Jz0,bzc0,bx03,by03,bz03,bxc,byc
 
 isf = obj_new('IDL_Savefile', filename = input_vars)
 isf->restore,['codesdir','event','time','outdir','datadir','run','nfffvars',$
-		'dx','dz']
+		'dx','dz','outtxt']
 obj_destroy, isf
 
 isf2 = obj_new('IDL_Savefile', filename = prepsav)
@@ -189,14 +189,15 @@ endfor
 cd, datadir
 
 if nz gt 3 then begin
+	;TODO !! check this keyword condition and update the code !!
 	if (keyword_set(nx0)) then begin   ; all nx1, ny1, nx0, and ny0 are set
-	nx2=nx1+nx0-1 & ny2=ny1+ny0-1
-	BVX=temporary(BVX(nx1:nx2,ny1:ny2,*))
-	BVY=temporary(BVY(nx1:nx2,ny1:ny2,*))
-	BVZ=temporary(BVZ(nx1:nx2,ny1:ny2,*))
-	if (size(Bres,/type) ne 0) then Bres=temporary(Bres(*,nx1:nx2,ny1:ny2,*))
-	nx=nx0 & ny=ny0
-	;goto, exitpro
+		nx2=nx1+nx0-1 & ny2=ny1+ny0-1
+		BVX=temporary(BVX(nx1:nx2,ny1:ny2,*))
+		BVY=temporary(BVY(nx1:nx2,ny1:ny2,*))
+		BVZ=temporary(BVZ(nx1:nx2,ny1:ny2,*))
+		if (size(Bres,/type) ne 0) then Bres=temporary(Bres(*,nx1:nx2,ny1:ny2,*))
+		nx=nx0 & ny=ny0
+		;goto, exitpro
 	endif
 
 	bx = bvx 
@@ -207,7 +208,7 @@ if nz gt 3 then begin
 	undefine, bx, by, bz
 	print, 'Output size:', size(BVZ)
 	
-	if keyword_set(outtxt) then begin
+	if (outtxt eq 1) then begin
 		;openw, unitx, cdr+'BVX_'+suff+'_25c'+nzstr+'.dat', /get_lun
 		;openw, unity, cdr+'BVY_'+suff+'_25c'+nzstr+'.dat', /get_lun
 		;openw, unitz, cdr+'BVZ_'+suff+'_25c'+nzstr+'.dat', /get_lun
