@@ -16,8 +16,11 @@ if (mode eq 'calculate') then begin
   bnfff_prep, input_vars, prepsav=prepsav
   nonff2, input_vars, prepsav
   nonff25d, input_vars, prepsav, bnfffsav=bnfffsav
-endif else bnfffsav = file_search(datadir + run + id + '*_Bnfff.sav')
-
+endif else begin 
+  bnfff_prep, input_vars, prepsav=prepsav
+  nonff25d, input_vars, prepsav, bnfffsav=bnfffsav
+  bnfffsav = file_search(datadir + run + id + '*_Bnfff.sav')
+endelse 
 isf = obj_new('IDL_Savefile', filename = bnfffsav)
 isf->restore,['bx','by','bz']  
 obj_destroy, isf
