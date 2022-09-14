@@ -16,7 +16,7 @@ print, isf->names()
 ; restore the paths
 isf->restore,['datadir','run','ds','event','time','check_crop','harp','id','dataformat']
 ;restore download
-if (dataformat eq 'sav') then isf->restore, 'savfile'
+if (dataformat eq 'sav') then isf->restore, ['savdir','savfile','bvecs']
 ; restore crop parameters
 if (check_crop eq 'no') then $
 isf->restore, 'cropsav'
@@ -54,10 +54,16 @@ if (ds eq 'hmi.sharp_cea_720s') then begin
 	endelse  
 endif else begin 
 	print, '======= restoring save file: ', savfile 
-	restore, datadir + savfile, /v 
-	bx = bx0
-	by = by0
-	bz = bz0 
+	if (not(isa(bvecs))) then bvecs = ['bx0','by0','bz0']
+	bvecsav = savdir + savfile
+	isf = obj_new('IDL_Savefile', filename = bvecsav)
+	isf->restore, bvecs,/v
+	
+	; define the magnetic field variables from the bvec list
+	bx = scope_varfetch(bvecs[0])
+	by = scope_varfetch(bvecs[0])
+	bz = scope_varfetch(bvecs[0])
+	help, bz
 endelse 
 
 ; === Cropping the field of view ===
@@ -90,6 +96,12 @@ if isa(index) then begin
 		rescale_data, dopp, cropsav, index=index, dopp0
 		rescale_data, cont, cropsav, index=index, cont0
 	endif 
+endif 
+
+if ((dataformat eq 'sav') and (check_crop eq 'no')) then begin 
+	rescale_data, bz, cropsav, bz0
+	rescale_data, bx, cropsav, bx0
+	rescale_data, by, cropsav, by0
 endif 
 ;2022/08/25: no need to rescale data if reading directly from sav?
 ;TODO ask for rescaling explicitly!

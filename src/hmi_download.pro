@@ -16,7 +16,7 @@ pro hmi_download, segment, input_vars
 ; --- Input files to set the parameters ---
 isf = obj_new('IDL_Savefile', filename = input_vars)
 isf->restore, ['tobs','ds','harp','datadir','run', 'tmpdir', 'outdir', 'time',$
- 'jsoc_time']
+ 'jsoc_time','outdir']
 obj_destroy, isf
 
 ; --- DOWNLOADING HMI DATA ---
@@ -38,7 +38,7 @@ for i = 0, seg_length - 1 do begin
 	ff = findfile(tmpfile,count=count)
 	if (count eq 1) then begin
   	spawn,'cp ' + tmpfile + ' ' + outfile
-	endif  else harp2fits, segment[i], tobs, ds, harp, datadir, run
+	endif  else harp2fits, segment[i], tobs, ds, harp, outdir, run
 endfor 
 
 print, '====================================='
