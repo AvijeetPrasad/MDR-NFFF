@@ -61,8 +61,8 @@ endif else begin
 	
 	; define the magnetic field variables from the bvec list
 	bx = scope_varfetch(bvecs[0])
-	by = scope_varfetch(bvecs[0])
-	bz = scope_varfetch(bvecs[0])
+	by = scope_varfetch(bvecs[1])
+	bz = scope_varfetch(bvecs[2])
 	help, bz
 endelse 
 
@@ -98,13 +98,14 @@ if isa(index) then begin
 	endif 
 endif 
 
-if ((dataformat eq 'sav') and (check_crop eq 'no')) then begin 
+; rescale sav input also 
+if (dataformat eq 'sav') then begin 
 	rescale_data, bz, cropsav, bz0
 	rescale_data, bx, cropsav, bx0
 	rescale_data, by, cropsav, by0
 endif 
-;2022/08/25: no need to rescale data if reading directly from sav?
-;TODO ask for rescaling explicitly!
+
+
 ;else begin 
 		; rescale_data, bz, cropsav, bz0
 		; rescale_data, bx, cropsav, bx0
