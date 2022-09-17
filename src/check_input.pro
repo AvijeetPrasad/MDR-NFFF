@@ -101,10 +101,10 @@ if (proc eq 'aia_mgn_plot') then begin
   evdir   = projectdir+event  ;event directory
   savdir  = evdir+'/extrapolation/' ;output save directory
   wav     = strsplit(wave,"[ ]", /extract)
-  wav     = wav[0]
+  wav     = strtrim(wav[0],2)
   datadir = projectdir+event+'/aia/'+wav+'/'
   outdir  = projectdir+event+'/plots/'+wav+'/'
-  outfile = event + '_' + outformat.charat(0)+ '_AIA' + wav
+  outfile = event + '_AIA_' + wav
   mktime, tstart, time, jsoc_time,aia_time=aia_time
   dt = '['+aia_time+durm+'m@'+cad+']'
   tref    = tobs[0]  ; reference time from
@@ -200,9 +200,9 @@ if (isa(ts_index)) then begin
 endif else read, input_check, prompt='Do the parameters look correct (y/n)? : '
 if (input_check eq 'y') then begin
   ; --- save the input file in the outdir
-  outfile = outdir + run + id + 'input.pro' 
-  file_copy, 'input.pro', outfile, /overwrite ;save the file
-  print, 'input file saved in: ', outfile
+  input_copy = outdir + run + id + 'input.pro' 
+  file_copy, 'input.pro', input_copy, /overwrite ;save the file
+  print, 'input file saved in: ', input_copy
 
   ;Optionally save a copy in include folder of the codesdir for future reference
   if (file_test(codesdir + 'include',/directory)) then begin 
