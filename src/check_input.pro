@@ -51,19 +51,20 @@ eventdir = projectdir + event
 tmpdir = eventdir + '/data/'
 
 ;--- Check for time series option ---
-if isa(ts_index) then  begin 
-  print, 'Time series run, index = ', ts_index
-  if (n_elements(tobs) gt 1) then begin
-    tstart = tobs[0]
-    tend = tobs[1]
-    if n_elements(tobs) eq 3 then cad = tobs[2]
-    mktseq, tstart, tend, tseq, times, nt, cad=cad
-    tobs = tseq[ts_index]
-    ;create a directory to hold the time series run info
-    tsdir = eventdir + '/extrapolation/' + times[0] + '_' + times[-1] +'/'
-    check_dir, tsdir ; check time series directory
-  endif
-endif 
+
+if (n_elements(tobs) gt 1) then begin
+  tstart = tobs[0]
+  tend = tobs[1]
+  dur  = addtime(tend,difference=tstart,/sec)
+  durm = strtrim(fix(dur/60),2) ;time duration in minutes
+  if n_elements(tobs) eq 3 then cad = tobs[2]
+  mktseq, tstart, tend, tseq, times, nt, cad=cad
+  if isa(ts_index) then tobs = tseq[ts_index] else tobs = tseq[0]
+  ;create a directory to hold the time series run info
+  tsdir = eventdir + '/extrapolation/' + times[0] + '_' + times[-1] +'/'
+  check_dir, tsdir ; check time series directory
+endif
+
 
 ; --- Setup paths for saving output ---
 ; formatted time string from observation time
@@ -95,6 +96,25 @@ if (proc eq 'hmi_vplot') then begin
 	outdir  = datadir  
 	outfile = 'HMI_' + event + '_' + time
 endif
+
+if (proc eq 'aia_mgn_plot') then begin 
+  evdir   = projectdir+event  ;event directory
+  savdir  = evdir+'/extrapolation/' ;output save directory
+  wav     = strsplit(wave,"[ ]", /extract)
+  wav     = wav[0]
+  datadir = projectdir+event+'/aia/'+wav+'/'
+  outdir  = projectdir+event+'/plots/'+wav+'/'
+  outfile = event + '_' + outformat.charat(0)+ '_AIA' + wav
+  mktime, tstart, time, jsoc_time,aia_time=aia_time
+  dt = '['+aia_time+durm+'m@'+cad+']'
+  tref    = tobs[0]  ; reference time from
+
+  ;* create directories as needed
+  if	 not(file_test(evdir,/directory)) then spawn,   'mkdir -p ' + evdir
+  if	 not(file_test(datadir,/directory)) then spawn, 'mkdir -p ' + datadir
+  if	 not(file_test(outdir,/directory)) then spawn,  'mkdir -p ' + outdir
+  if	 not(file_test(savdir,/directory)) then spawn,  'mkdir -p ' + savdir
+endif 
 
 ; --- Check paths and create if they don't exist---
 check_dir, projectdir ; check project directory
@@ -130,10 +150,11 @@ endif
 
 if (check_crop eq 'no') then begin 
   ; should be same as crop_data
+  if (proc eq 'aia_mgn_plot') then scl = 1
   xys = strtrim(xsize,2) + '_' + strtrim(ysize,2) + '_' + strtrim(fix(scl),2)
   nx = fix(xsize / scl)
   ny = fix(ysize / scl)
-  cropsav = outdir + run + id + 'crop.sav'
+  cropsav = outdir + run + id + 'crop.sav' 
   save, outdir, run, xsize, ysize, xorg, yorg, scl, nz, harp, nx, ny, xys, $
 	  description = 'Cropping details for the segment',$
 	  filename = cropsav
