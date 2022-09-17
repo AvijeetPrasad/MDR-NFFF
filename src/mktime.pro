@@ -1,4 +1,4 @@
-pro    mktime, tstart, time, jsoc_time
+pro    mktime, tstart, time, jsoc_time, aia_time=aia_time
 ;+ 
 ; name: mktime
 ;
@@ -17,7 +17,7 @@ pro    mktime, tstart, time, jsoc_time
 ; author : Avijeet Prasad
 ; created on : 2022-09-11
 ;
-; updates :
+; updates : 2022/09/17: add option to send AIA time
 ;-
 ;Decription: 
 
@@ -29,5 +29,5 @@ pro    mktime, tstart, time, jsoc_time
     min=strmid(t1,14,2)
     time=dd+'_'+mm+'_'+yy+'_h'+hh+min
     jsoc_time = yy+mm+dd+'_'+hh+min+'00_TAI.'
-
+    aia_time = yy+'.'+mm+'.'+dd+'_'+hh+':'+min+'_TAI/'
  end
