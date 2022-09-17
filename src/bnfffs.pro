@@ -28,6 +28,7 @@ input = codesdir + 'input.pro'
 ;@input  ; <--- Include the input file
 ; Check input and restore the input variables
 check_input, input, input_vars = input_vars, ts_index=0
+;TODO the above line creates a duplicate id for the first time step, delete it!
 restore, input_vars,/v 
 
 ; Check if a list of ids was provided at the input else initalize an array
@@ -41,19 +42,39 @@ inputs = strarr(nt)
 ; Define a file name for saving ids, and inputs for later use
 savts = tsdir + event + '_' + id + 'ts.sav'
 ;TODO add a condition to restore savts from previous runs if the file exists
-
 ;-----------------------
 if (mode eq 'calculate') then begin
   for t = 0, nt - 1 do begin 
+    ; TODO check why the time step is not being printed
+    print, '----------------------------------'
     print, 't = ' + strtrim(t+1,2) + ' out of ' + strtrim(nt,2)
     print, 'time = ', tseq[t]
-    check_input, input, input_vars=input_vars, index=t
+    print, '----------------------------------'
+    check_input, input, input_vars=input_vars, ts_index=t
     restore, input_vars,/v 
     ids[t] = id
     inputs[t] = input_vars
     bnfff_prep, input_vars, prepsav=prepsav
     nonff2, input_vars, prepsav
     nonff25d, input_vars, prepsav, bnfffsav=bnfffsav
+
+    ;TODO clean up the code and the workflow, remove repeated code!
+    bnfffsav = file_search(outdir + run + id + '*_Bnfff.sav')
+    isf = obj_new('IDL_Savefile', filename = bnfffsav)
+    isf->restore,['bx','by','bz']  
+    obj_destroy, isf
+    check_dims, bx, dims 
+    ; calculate decay index
+    if (decay   eq 1) then  cal_di, bx, by, bz, disav=disav, vars=input_vars
+    ; calculate qfactor
+    if (qfactor eq 1) then cal_qfactor, bx, by, bz, qfsav=qfsav, vars=input_vars 
+    ; write the vapor output
+    if (vapor eq 1) then begin 
+      ; single file outputs for each time step
+      sav2vdc, bnfffsav, insav=input_vars
+      ; combined vdf file for all time steps 
+      sav2vdc, bnfffsav, insav=input_vars, numts=numts, ts=ts, vdcfile=vdcfile
+    endif 
   endfor 
   save, ids, inputs, current, qfactor, decay, filename = savts
 endif 
