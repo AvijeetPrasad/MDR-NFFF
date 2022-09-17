@@ -24,8 +24,10 @@ pro write_raw2vdc, vdcfile, type, varname, var, ts=ts
 
 ; Check if time step is set else set it to 0
 if not keyword_set(ts) then ts = '0' 
+ts = strtrim(ts,2)
+if (ts eq '0') then print, '=== writing ' + varname + ' to vdc ==='
+print, 'time step = ', ts
 
-print, '=== writing ' + varname + ' to vdc ==='
 ; Temporarily write the variable into a raw file in the codedir
 rawfile = 'temp_' + varname + '.raw'
 openw, 1, rawfile
@@ -41,6 +43,6 @@ spawn, 'raw2vdc -ts ' + ts + ' -type ' + type + ' -varname ' + varname + $
 ; Delete the temporary raw file
 spawn, 'rm ' + rawfile 
 
-print, 'Done!'
+;print, 'Done!'
 
 end
