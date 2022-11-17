@@ -234,10 +234,15 @@ if nz gt 3 then begin
 	
 	; TODO check if the potential field is being saved properly
 	bpotsav = cdr + suff + 'Bpot.sav'
+	; Define the three components of the potential field
+	bpx = bres[0]
+	bpy = bres[1]
+	bpz = bres[2]
 	if not file_test(bpotsav) $
 		or (size(Bres,/type) ne 0) then begin
 		B2p=total(temporary(Bres)^2) 
-		save, B2p, filename = bpotsav
+		save, bpx, bpy, bpz, B2p, filename = bpotsav, $
+			description='Bp(x,y,z)= components of the potential field, b2p= total(B^2)'
 		; WARNING: MORE ZEROS SHOULD BE ADDED
 		; SURROUNDING THE FIELD TO OBTAIN A MORE ACCURATE ESTIMATE OF B2p
 		;Bres=0.0  ; free memory
@@ -246,7 +251,8 @@ if nz gt 3 then begin
 	B2=total(BVX*BVX+BVY*BVY+BVZ*BVZ)
 	epsp=B2/B2p
 	print, 'Ep=', epsp, '  B2=',B2, '   B2p=',B2p
-	save, B2p,B2,epsp, filename = bpotsav
+	save, bpx, bpy, bpz, B2p, B2, epsp, filename = bpotsav, $
+		description='Bp(x,y,z)= components of the potential field, b2p= total(B^2)'
 	;undefine, Bres ; Bres is the potential field for the same boundary
 endif
 
