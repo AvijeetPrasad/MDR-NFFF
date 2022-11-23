@@ -175,18 +175,24 @@ for Zin=0,nz-1 do begin
 	BVX(*,*,zin)=BXP(*,*)+BVX(*,*,zin)
 	BVY(*,*,zin)=BYP(*,*)+BVY(*,*,zin)
 	BVZ(*,*,zin)=BZP(*,*)+BVZ(*,*,zin)
-
-  if not file_test('BVp_'+suff+nzstr+'.cdf') or $
-		(nz le 3) or (size(Bres,/type) ne 0) then begin
-		ALEX1,ITAPERx,ITAPERy,double(0.0),z(ZIN),Bz0,BXP,BYP,BZP,OBLIQUE,$
+  ;if not file_test('BVp_'+suff+nzstr+'.cdf') or $
+	;	(nz le 3) or (size(Bres,/type) ne 0) then begin
+	; Calculate the potential field for the initial boundary
+	ALEX1,ITAPERx,ITAPERy,double(0.0),z(ZIN),Bz0,BXP,BYP,BZP,OBLIQUE,$
 			LATI=LATI,LONGI=LONGI,BORDER=BORDER
 		Bres(0,*,*,ZIN)=BXP(*,*)
 		Bres(1,*,*,ZIN)=BYP(*,*)
 		Bres(2,*,*,ZIN)=BZP(*,*)
-  endif
+  ;endif
 endfor
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-cd, datadir
+;cd, datadir
+
+; save the three components of the potential field
+	bpx = reform(bres[0,*,*,*])
+	bpy = reform(bres[1,*,*,*])
+	bpz = reform(bres[2,*,*,*])
 
 if nz gt 3 then begin
 	;TODO !! check this keyword condition and update the code !!
@@ -234,10 +240,6 @@ if nz gt 3 then begin
 	
 	; TODO check if the potential field is being saved properly
 	bpotsav = cdr + suff + 'Bpot.sav'
-	; Define the three components of the potential field
-	bpx = bres[0]
-	bpy = bres[1]
-	bpz = bres[2]
 	if not file_test(bpotsav) $
 		or (size(Bres,/type) ne 0) then begin
 		B2p=total(temporary(Bres)^2) 
