@@ -242,7 +242,7 @@ if nz gt 3 then begin
 	bpotsav = cdr + suff + 'Bpot.sav'
 	if not file_test(bpotsav) $
 		or (size(Bres,/type) ne 0) then begin
-		B2p=total(temporary(Bres)^2) 
+		B2p=total(BPX*BPX+BPY*BPY+BPZ*BPZ)
 		save, bpx, bpy, bpz, B2p, filename = bpotsav, $
 			description='Bp(x,y,z)= components of the potential field, b2p= total(B^2)'
 		; WARNING: MORE ZEROS SHOULD BE ADDED

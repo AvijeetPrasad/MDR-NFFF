@@ -230,8 +230,9 @@ for k=0, nk-1 do begin
 
 	ALEX1_inv2,ITAPERx,ITAPERy,0.0,0.0,Bzp,Bxp,Byp,xoy,0,$
 		LATI=LATI,LONGI=LONGI,BORDER=BORDER
-	print, 'Max bzp=', max(bzp), ' Min. bzp=', min(bzp);, ' Size =', size(bzp)
-	printf,unitout, 'Max bzp=', max(bzp), ' Min. bzp=', min(bzp)
+	
+	;print, 'Max bzp=', max(bzp), ' Min. bzp=', min(bzp);, ' Size =', size(bzp)
+	;printf,unitout, 'Max bzp=', max(bzp), ' Min. bzp=', min(bzp)
 
 	;if keyword_set(seehfr) then $
 	;     ALEX1_seehafer,ITAPERx,ITAPERy,0.0,0.0,Bzp,Bxp,Byp,Bzp0,0,$
