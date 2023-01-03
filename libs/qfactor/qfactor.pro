@@ -1,7 +1,7 @@
 PRO qfactor, bx, by, bz, xreg=xreg, yreg=yreg, zreg=zreg, csFlag=csFlag,$
  factor=factor, RK4Flag=RK4Flag, step=step, tol=tol, scottFlag=scottFlag,$
  maxsteps=maxsteps, twistFlag=twistFlag, nbridges=nbridges, odir=odir,$ 
- fstr=fstr, no_preview=no_preview, tmpB=tmpB, RAMtmp=RAMtmp
+ fstr=fstr, no_preview=no_preview, tmpB=tmpB, RAMtmp=RAMtmp, qpath = qpath
 ;+
 ; PURPOSE:
 ;   Calculate the squashing factor Q at the photosphere or a cross section
@@ -277,7 +277,7 @@ close,  unit
 ; calculate in Fortran
 cd, tmp_dir
 tnow=systime(1)
-spawn, 'qfactor.x' ; if not known by the system, specify the path
+spawn, qpath + 'qfactor.x' ; if not known by the system, specify the path
 tend=systime(1)
 cd, cdir
 tcalc=tend-tnow

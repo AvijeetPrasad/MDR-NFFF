@@ -16,7 +16,7 @@ pro cal_qfactor, bx, by, bz, qfsav=qfsav, vars=vars
 
 ;restore, vars
 isf = obj_new('IDL_Savefile', filename = vars)
-isf->restore,['datadir', 'run', 'id']
+isf->restore,['datadir', 'run', 'id', 'qpath']
 obj_destroy, isf
 
 print,'status: calculating the squashing factor'
@@ -42,7 +42,7 @@ qfrun = odir + fstr + 'qfactor_run.sav'
 if not(file_test(qfrun)) then begin 
   qfactor, bx, by, bz, xreg=xreg, yreg=yreg, zreg=zreg, factor=factor, $
     twistFlag=twistFlag, csFlag=csFlag,no_preview=no_preview, $
-    nbridges=nbridges, step=step, odir=odir, fstr=fstr
+    nbridges=nbridges, step=step, odir=odir, fstr=fstr, qpath = qpath
 endif else begin 
   print, '--- QFactor sav file already exists! --'
 endelse 
