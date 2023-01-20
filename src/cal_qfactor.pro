@@ -16,7 +16,7 @@ pro cal_qfactor, bx, by, bz, qfsav=qfsav, vars=vars
 
 ;restore, vars
 isf = obj_new('IDL_Savefile', filename = vars)
-isf->restore,['datadir', 'run', 'id', 'qpath']
+isf->restore,['datadir', 'run', 'id', 'qpath','codesdir']
 obj_destroy, isf
 
 print,'status: calculating the squashing factor'
@@ -35,7 +35,10 @@ factor = 1
 no_preview = 1 
 ;qpath  = codesdir
 ;csFlag=1
-;spawn,'ifort -o qfactor.x qfactor.f90 -fopenmp -mcmodel=medium -O3 -xHost -ipo'
+;2023/01/17: create qfactor executable in the qpath
+cd, qpath
+spawn,'ifort -o qfactor.x qfactor.f90 -fopenmp -mcmodel=medium -O3 -xHost -ipo'
+cd, codesdir
 ; 2022/05/08: trying -r8 for forcing double precision
 
 qfrun = odir + fstr + 'qfactor_run.sav'

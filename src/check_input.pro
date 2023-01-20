@@ -97,6 +97,7 @@ if (proc eq 'hmi_vplot') then begin
 	outfile = 'HMI_' + event + '_' + time
 endif
 
+;TODO add a check to ensure that tobs is always passed as a list
 if (proc eq 'aia_mgn_plot') then begin 
   evdir   = projectdir+event  ;event directory
   savdir  = evdir+'/extrapolation/' ;output save directory
