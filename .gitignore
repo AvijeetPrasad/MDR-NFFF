@@ -1,3 +1,4 @@
 src/input.pro
 *DS_Store
 *.mod
+libs/qfactor/*.mod
