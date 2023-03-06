@@ -38,7 +38,7 @@ if keyword_set(update) then begin
   print, 'downloading the latest all_harps_with_noaa_ars.txt file from jsoc'
   link='http://jsoc.stanford.edu/doc/data/hmi/harpnum_to_noaa/all_harps_with_noaa_ars.txt'
   spawn, 'rm ' + file   ; delete the old file
-  spawn, 'wget ' + link + ' -P ' + codesdir + 'libs/hmi/';save the new file in codesdir
+  spawn, 'wget ' + link + ' -P ' + codesdir + 'utils/hmi/';save the new file in codesdir
   fsearch = file_search(codesdir, 'all_harps_with_noaa_ars.txt')
 endif 
 
