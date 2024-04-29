@@ -24,7 +24,7 @@ isf->restore, 'cropsav'
 obj_destroy, isf
 
 ;=== Downloading/Restoring data ===
-if (ds eq 'hmi.sharp_cea_720s') then begin 
+if (ds eq 'hmi.sharp_cea_720s' or ds eq 'hmi.sharp_cea_720s_dconS') then begin 
 	if (dataformat eq 'fits') then begin 
 		print, '=== downloaing files from JSOC ==='
 		segments = ['Br', 'Bp', 'Bt', 'Dopplergram', 'continuum']

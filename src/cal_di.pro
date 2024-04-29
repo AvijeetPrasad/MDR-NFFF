@@ -41,15 +41,13 @@ endfor
 
 print,'status: done'
 
-datadir = ''
-run     = ''
 if keyword_set(vars) then begin
   isf = obj_new('IDL_Savefile', filename = vars)
-  isf->restore,['datadir','run']
+  isf->restore,['datadir','run', 'id']
   obj_destroy, isf
 endif
 
-disav = datadir + run + 'di.sav'
+disav = datadir + run + '_' + id + '_'+ 'di.sav'
 save, di, filename = disav
 
 end
