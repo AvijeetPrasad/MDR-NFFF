@@ -46,8 +46,7 @@ if keyword_set(vars) then begin
   isf->restore,['datadir','run', 'id']
   obj_destroy, isf
 endif
-
-disav = datadir + run + '_' + id + '_'+ 'di.sav'
+disav = datadir + run + id + 'di.sav'
 save, di, filename = disav
 
 end

@@ -114,7 +114,7 @@ if (current eq 1) then begin
 endif
 
 if (decay eq 1) then begin 
-  disav = outdir + run + 'di.sav'
+  disav = outdir + run + id + 'di.sav'
   restore, disav,/v
   write_raw2vdc, vdcfile, 'float32', 'di', di, ts=ts
 endif 
