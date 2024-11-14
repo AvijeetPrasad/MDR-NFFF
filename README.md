@@ -3,6 +3,13 @@
 Non-Force-Free-Field extrapolation code based on the Minimum Dissipation Rate (MDR)
 principle. See [Hu et al. 2010](https://ui.adsabs.harvard.edu/abs/2010JASTP..72..219H/abstract) for details on the implementation.
 
+## Dependencies
+The code is written in IDL (Interactive Data Language) and requires the some functions from the following dependencies:
+
+- Calculate Squashing Factor and Twist Number: [qfactor](http://staff.ustc.edu.cn/~rliu/qfactor.html)
+- Updated versions of the Squashing Factor code are also available at: [FastQSL (CPU)](https://github.com/el2718/FastQSL) and [FastQSL (GPU)](https://github.com/peijin94/FastQSL)
+- SolarSoft IDL: [SSW](https://soho.nascom.nasa.gov/solarsoft/)
+- Collection of IDL routines written and maintained by Chris Beaumont [beaumont-idl-library](https://github.com/ChrisBeaumont/beaumont-idl-library)
 
 ## Input File Parameters Documentation
 
@@ -13,6 +20,7 @@ This document provides detailed explanations of the parameters defined in the `i
 ## Table of Contents
 
 - [MDR-NFFF](#mdr-nfff)
+  - [Dependencies](#dependencies)
   - [Input File Parameters Documentation](#input-file-parameters-documentation)
   - [Table of Contents](#table-of-contents)
   - [Introduction](#introduction)
