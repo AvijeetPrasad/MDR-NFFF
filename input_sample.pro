@@ -112,6 +112,3 @@ endif
   decay = 1 ; 0/1 calculate decay index
   vapor = 1 ; 0/1 save output as vapor file -> needs vapor
   outtxt = 0 ; 0/1 save dat output for reading in EULAG
-
-
-

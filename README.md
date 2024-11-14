@@ -17,9 +17,10 @@ principle. See [Hu et al. 2010](https://ui.adsabs.harvard.edu/abs/2010JASTP..72.
       - [Additional Settings for `'fcube'` Format](#additional-settings-for-fcube-format)
     - [Cropping Details](#cropping-details)
     - [Run Mode](#run-mode)
-  - [NFFF Extrapolation Settings](#nfff-extrapolation-settings)
-  - [Output Settings](#output-settings)
-  - [Additional Comments](#additional-comments)
+    - [NFFF Extrapolation Settings](#nfff-extrapolation-settings)
+    - [Output Settings](#output-settings)
+    - [Additional Comments](#additional-comments)
+    - [Example Input File](#example-input-file)
   - [Issues and suggestions](#issues-and-suggestions)
   - [Contact](#contact)
 
@@ -244,7 +245,7 @@ If `mode` is set to `'analysis'`, specify the following:
 
 ---
 
-## NFFF Extrapolation Settings
+### NFFF Extrapolation Settings
 
 Parameters specific to the Non-Force-Free Field (NFFF) extrapolation:
 
@@ -306,7 +307,7 @@ Parameters specific to the Non-Force-Free Field (NFFF) extrapolation:
 
 ---
 
-## Output Settings
+### Output Settings
 
 Settings related to the output of the extrapolation and analysis:
 
@@ -364,13 +365,50 @@ Settings related to the output of the extrapolation and analysis:
 
 ---
 
-## Additional Comments
+### Additional Comments
 
 - Always verify the parameter values before running any codes to avoid unexpected behavior.
 - The parameters `xsize`, `ysize`, `xorg`, `yorg`, `scl`, and `nz` are critical for data cropping and must be set accurately if `check_crop` is set to `'no'`.
 - The `mode` parameter controls whether a new calculation is performed or existing results are analyzed. Ensure that run IDs are correctly specified when in `'analysis'` mode.
 - The NFFF extrapolation parameters (`nk0`, `nl`, `itaperx`, `itapery`, `dx`, `dz`, `wt_set`) should be set based on the specifics of your simulation and desired accuracy.
 
+### Example Input File
+```idl
+; --- Input paths ---
+codesdir = '/Users/avijeetp/codes/idl/extrapolation/' ; Enter the path to root directory to all your codes
+projectdir = '/Users/avijeetp/extrapolations/'; Enter the hard-disk path or the path to the main project folder
+event = 'AR12192' ; Enter the event name. Typically the NOAA number of an active region
+source = 'sdo_hmi' ; Enter the instrument name as the data source
+ds = 'hmi.sharp_cea_720s' ; Enter the dataseries name
+tobs = '09:36 20-oct-2023' ; Enter the time of the observation
+dataformat = 'fits' ; Enter the input data format
+; --- Cropping details ---
+check_crop = 'no' ;
+if (check_crop eq 'no') then begin
+  xsize = 1280 ; number of pixels in x after cropping
+  ysize = 832 ; number of pixels in y after cropping
+  xorg = 50 ; x coordinate of bottom left pixel
+  yorg = 0 ; y coordinate of bottom left pixel
+  scl = 1. ; factor for rescaling the data to xsize / scl
+  nz = 416 ; specify nz based on the scl value, typically nz = ysize / scl
+endif
+mode = 'calculate' ; run mode is calculate
+; --- NFFF Extrapolation settings ---
+nk0 = 3000 ; number of loops in potential field correction,typically >= 300
+nl = 8 ; number of steps in the alpha loop, typically >= 8
+itaperx = 16 ; tapering in x, based on domain size
+itapery = 8 ; tapering in y, based on domain size
+dx = 1 ; step size in x (only uniform grid supported)
+dz = 1 ; step size in z (non-uniform grid in z possible but not yet supported)
+wt_set = 1.1 ; weight with transverse field strength for calculating En
+; --- output settings ---
+current = 1 ; 0/1 calculate current
+qfactor = 1 ; 0/1 calculate qfactor -> needs ifort
+qpath = codesdir + 'MDR-NFFF/libs/qfactor/' ; path to qfactor executable
+decay = 1 ; 0/1 calculate decay index
+vapor = 1 ; 0/1 save output as vapor file -> needs vapor
+outtxt = 0 ; 0/1 save dat output for reading in EULAG
+```
 ---
 
 ## Issues and suggestions
