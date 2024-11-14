@@ -3,17 +3,14 @@
 ;
 ; purpose: common input file to pass parameters to various codes
 ;
-; calling sequence: included as @input in check_input file
+; calling sequence: included as @input in check_input.pro file
 ;
-; input: input and output is based on the procedure to be run set by the
-;       variable 'proc'.
 ;
 ; author : Avijeet Prasad
 ; created on : 2024-11-12
 ; comment: rename `input_sample.pro` to `input.pro` before running bnfff.pro
 ;-
 
-; === Common Block ===
 ; --- Input paths ---
 ; Enter the path to root directory to all your codes
 ; This path would be added to the top of your idl path

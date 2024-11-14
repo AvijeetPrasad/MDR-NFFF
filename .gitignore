@@ -3,3 +3,4 @@ src/input.pro
 *.mod
 libs/qfactor/*.mod
 libs/qfactor/qfactor.x
+temp.txt

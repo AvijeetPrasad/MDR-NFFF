@@ -3,28 +3,13 @@
 Non-Force-Free-Field extrapolation code based on the Minimum Dissipation Rate (MDR)
 principle. See [Hu et al. 2010](https://ui.adsabs.harvard.edu/abs/2010JASTP..72..219H/abstract) for details on the implementation.
 
-## Dependencies
-The code is written in IDL (Interactive Data Language) and requires the some functions from the following dependencies:
-
-- Calculate Squashing Factor and Twist Number: [qfactor](http://staff.ustc.edu.cn/~rliu/qfactor.html)
-- Updated versions of the Squashing Factor code are also available at: [FastQSL (CPU)](https://github.com/el2718/FastQSL) and [FastQSL (GPU)](https://github.com/peijin94/FastQSL)
-- SolarSoft IDL: [SSW](https://soho.nascom.nasa.gov/solarsoft/)
-- Collection of IDL routines written and maintained by Chris Beaumont [beaumont-idl-library](https://github.com/ChrisBeaumont/beaumont-idl-library)
-
-## Input File Parameters Documentation
-
-This document provides detailed explanations of the parameters defined in the `input.pro` file. The `input.pro` file serves as a common input file to pass parameters to various codes used for magnetic field extrapolation and analysis. It is crucial to understand each parameter to ensure the proper functioning of the codes.
-
----
 
 ## Table of Contents
 
 - [MDR-NFFF](#mdr-nfff)
+  - [Table of Contents](#table-of-contents)
   - [Dependencies](#dependencies)
   - [Input File Parameters Documentation](#input-file-parameters-documentation)
-  - [Table of Contents](#table-of-contents)
-  - [Introduction](#introduction)
-  - [Common Block](#common-block)
     - [Input Paths](#input-paths)
     - [Event Details](#event-details)
     - [Data Input Settings](#data-input-settings)
@@ -35,16 +20,26 @@ This document provides detailed explanations of the parameters defined in the `i
   - [NFFF Extrapolation Settings](#nfff-extrapolation-settings)
   - [Output Settings](#output-settings)
   - [Additional Comments](#additional-comments)
+  - [Issues and suggestions](#issues-and-suggestions)
+  - [Contact](#contact)
 
 ---
 
-## Introduction
+## Dependencies
+The code is written in IDL (Interactive Data Language) and requires the some functions from the following dependencies:
 
-The `input.pro` file is an IDL (Interactive Data Language) script that sets up the parameters required for running various codes related to magnetic field extrapolation. Before running `bnfff.pro` or any related procedures, ensure that `input_sample.pro` is renamed to `input.pro`.
+- Calculate Squashing Factor and Twist Number: [qfactor](http://staff.ustc.edu.cn/~rliu/qfactor.html)
+- Updated versions of the Squashing Factor code are also available at: [FastQSL (CPU)](https://github.com/el2718/FastQSL) and [FastQSL (GPU)](https://github.com/peijin94/FastQSL)
+- SolarSoft IDL: [SSW](https://soho.nascom.nasa.gov/solarsoft/)
+- Collection of IDL routines written and maintained by Chris Beaumont [beaumont-idl-library](https://github.com/ChrisBeaumont/beaumont-idl-library)
 
----
+## Input File Parameters Documentation
 
-## Common Block
+This section provides detailed explanations and input examples of the parameters defined in the `input_sample.pro` file. 
+The first step is to rename `input_sample.pro` to `input.pro` before running any codes.
+
+The `input.pro` file serves as a common input file to pass parameters to various codes used for the non-force-free field extrapolation 
+code `bnfff.pro` or any related procedures.
 
 ### Input Paths
 
@@ -54,7 +49,7 @@ The `input.pro` file is an IDL (Interactive Data Language) script that sets up t
   This is where this `input.pro` file should be present.
 
   ```idl
-  codesdir = '/Users/avijeetp/codes/idl/extrapolation/'
+  codesdir = '/Users/avijeetp/codes/extrapolation/'
   ```
 
 - **`projectdir`**: *(String)*
@@ -70,7 +65,7 @@ The `input.pro` file is an IDL (Interactive Data Language) script that sets up t
 
 - **`event`**: *(String)*
 
-  Name of the event to analyze. Typically, this is the NOAA number of an active region (e.g., `'AR12192'`). For quiet sun data, set `event = 'QS'`.
+  Name of the event to analyze. Typically, this is the NOAA number of an active region (e.g., `'AR12192'`). For quiet sun data, you can set any other string eg. `event = 'QS'`.
 
   ```idl
   event = 'AR12192'
@@ -78,7 +73,8 @@ The `input.pro` file is an IDL (Interactive Data Language) script that sets up t
 
 - **`source`**: *(String)*
 
-  Name of the instrument used as the data source. Examples include `'sdo_hmi'`, `'hinode_sot'`, `'sst_crisp'`.
+  Name of the instrument used as the data source. Examples: `'sdo_hmi'`, `'hinode_sot'`, `'sst_crisp'`.
+  This is used to identify the source of the data and load the appropriate routines.
 
   ```idl
   source = 'sdo_hmi'
@@ -86,7 +82,7 @@ The `input.pro` file is an IDL (Interactive Data Language) script that sets up t
 
 - **`ds`**: *(String)*
 
-  Dataseries name. Examples include `'hmi.sharp_cea_720s'`, `'nb_6173'`, etc.
+  Dataseries name. Examples: `'hmi.B_720s'`, `'hmi.sharp_cea_720s'`, `'hmi.sharp_cea_720s_dconS'`, `'nb_6173'`, etc.
 
   ```idl
   ds = 'hmi.sharp_cea_720s'
@@ -94,7 +90,9 @@ The `input.pro` file is an IDL (Interactive Data Language) script that sets up t
 
 - **`tobs`**: *(String or Array of Strings)*
 
-  Time of the observation in the format `'HH:MM DD-MMM-YYYY'`. It can be a single string or an array of strings for multiple times.
+  Time of the observation in the format `'HH:MM DD-MMM-YYYY'`. 
+  It can be a single string or an array of strings with start and end time.
+  Examples: `'09:36 20-oct-2023'`, `['10:00 26-jul-2023', '10:24 26-jul-2023', '12']`.
 
   ```idl
   tobs = '09:36 20-oct-2023'
@@ -162,7 +160,6 @@ If `dataformat` is set to `'fcube'`, specify the following:
 
   - `'yes'`: Opens an interactive window to define cropping details.
   - `'no'`: Uses predefined cropping parameters without user interaction.
-  - `'input'`: (Reserved for future use or specific cases).
 
   ```idl
   check_crop = 'yes'
@@ -171,7 +168,7 @@ If `dataformat` is set to `'fcube'`, specify the following:
 If `check_crop` is set to `'no'`, the following parameters must be specified:
 
 - **`xsize`**: *(Integer)*
-
+  
   Number of pixels in the x-direction after cropping.
 
   ```idl
@@ -233,9 +230,10 @@ If `check_crop` is set to `'no'`, the following parameters must be specified:
 
 If `mode` is set to `'analysis'`, specify the following:
 
-- **`ids`**: *(Array of Strings)*
+- **`ids`/`id`**: *(Array of Strings)*
+  - Single ID Example: `id = '1673877191'`
 
-  List of run IDs to analyze.
+  -  List of run IDs to analyze.
 
   ```idl
   ids = [ $
@@ -375,7 +373,11 @@ Settings related to the output of the extrapolation and analysis:
 
 ---
 
+## Issues and suggestions
+Issues and suggestions can be reported [here](https://github.com/AvijeetPrasad/MDR-NFFF/issues).
+
+## Contact
 For any questions or further assistance, please contact the author:
 
 **Author**: Avijeet Prasad  
-**Created On**: 2024-11-12
+**Created On**: 2024-11-14
