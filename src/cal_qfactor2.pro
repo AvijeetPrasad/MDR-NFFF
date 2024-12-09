@@ -36,11 +36,11 @@ no_preview = 1
 ;csFlag=1
 ;2023/01/17: create qfactor executable in the qpath
 cd, qpath
-spawn,'ifort -o qfactor.x qfactor.f90 -fopenmp -mcmodel=medium -O3 -xHost -ipo'
+;spawn,'ifort -o qfactor.x qfactor.f90 -fopenmp -mcmodel=medium -O3 -xHost -ipo'
 cd, codesdir
 ; 2022/05/08: trying -r8 for forcing double precision
 
-qfrun = odir + fstr + 'qfactor_run.sav'
+qfrun = odir + fstr + 'qfactor.sav'
 if not(file_test(qfrun)) then begin 
   qfactor, bx, by, bz, xreg=xreg, yreg=yreg, zreg=zreg, factor=factor, $
     twistFlag=twistFlag, csFlag=csFlag,no_preview=no_preview, $

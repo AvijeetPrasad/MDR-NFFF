@@ -346,7 +346,7 @@ pro qfactor, bx, by, bz, xreg = xreg, yreg = yreg, zreg = zreg, csflag = csFlag,
     fstr = head_str + factor_str + cut_str
   endelse
   ; Save Qfactor output
-  file_sav = odir + fstr + 'qfactor_run.sav'
+  file_sav = odir + fstr + 'qfactor.sav'
   ; -------------------------------------------------------------------------------
   ; mark the area for calculation on the magnetogram
   if (~no_preview) then begin
