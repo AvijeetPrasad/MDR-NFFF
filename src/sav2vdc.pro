@@ -89,7 +89,7 @@ if (ts eq '0') then begin
   if file_test(vdcfile) then begin
     file_delete, vdcfile
     vdcdir = vdcfile.substring(0,-5) + '_data'
-    file_delete, vdcdir, /recursive
+    ; file_delete, vdcdir, /recursive
   endif
   ; print all the variables to be saved 
   
